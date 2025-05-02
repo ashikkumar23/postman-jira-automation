@@ -1,6 +1,6 @@
 # Postman-Jira Automation: Streamlined Test Reporting
 
-## Table of Contents
+## 📖 Table of Contents
 - [Overview](#overview)
 - [Key Features](#key-features)
 - [Repository Structure](#repository-structure)
@@ -20,13 +20,13 @@
 
 ---
 
-## Overview
+## 🌐 Overview
 
 This repository demonstrates a **Proof of Concept (POC)** for integrating **Postman** with **Jira** to automate the posting of test results as comments on Jira tickets. This integration reduces manual effort and improves team efficiency by consolidating test results and directly adding them to the relevant Jira tickets.
 
 ---
 
-## Key Features
+## 🌟 Key Features
 
 - **Automated Comments**: Consolidates test results and formats them as Jira comments.
 - **Detailed Request/Response Information**: Includes Request Method, URI, Payload, Query Params, Status Code, and Response Body in the comments.
@@ -38,7 +38,7 @@ This repository demonstrates a **Proof of Concept (POC)** for integrating **Post
 
 ---
 
-## Repository Structure
+## 📂 Repository Structure
 
 ```plaintext
 postman-jira-automation/
@@ -57,7 +57,7 @@ postman-jira-automation/
 
 ---
 
-## Prerequisites
+## ⚡ Prerequisites
 
 Before you begin, ensure you have the following:
 
@@ -68,7 +68,7 @@ Before you begin, ensure you have the following:
 
 ---
 
-## Setup Instructions
+## 🛠️ Setup Instructions
 
 ### Step 1: Clone This Repository
 
@@ -105,7 +105,7 @@ cd postman-jira-automation
 
 ---
 
-## Placeholder Variables
+## 📝 Placeholder Variables
 
 | Variable        | Scope         | Description                                     | Example                                   | Default Value      |
 |-----------------|---------------|-------------------------------------------------|-------------------------------------------|--------------------|
@@ -117,7 +117,7 @@ cd postman-jira-automation
 
 ---
 
-## Example Workflow
+## 🎯 Example Workflow
 
 ### Example Jira Comment Output
 
@@ -127,7 +127,7 @@ Below is an example of how a consolidated test report appears as a Jira comment 
 
 ---
 
-## Troubleshooting
+## 🐞 Troubleshooting
 
 ### Common Issues
 
@@ -150,7 +150,7 @@ Below is an example of how a consolidated test report appears as a Jira comment 
 
 ---
 
-## Related Resources
+## 🔗 Related Resources
 
 - [Using Postman Environments](https://learning.postman.com/docs/sending-requests/managing-environments/)
 - [Jira REST API Documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v3/)
@@ -158,12 +158,12 @@ Below is an example of how a consolidated test report appears as a Jira comment 
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Feel free to open issues or submit pull requests to enhance this POC. Suggestions for additional features or bug fixes are welcome!
 
 ---
 
-## License
+## 📜 License
 
 This project is licensed under the [MIT License](https://github.com/ashikkumar23/postman-jira-automation/blob/master/LICENSE).
