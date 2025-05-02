@@ -1,0 +1,376 @@
+{
+	"info": {
+		"_postman_id": "3363b2dd-32e7-47a7-8e78-a1ab8af86711",
+		"name": "postman-jira-automation",
+		"description": "A sample Postman collection for testing Jira integration.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11181625"
+	},
+	"item": [
+		{
+			"name": "Positive Flow: Testing with a valid user ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fetch existing test results or initialize an empty array",
+							"let testResults = pm.collectionVariables.get(\"testResults\") || \"[]\";",
+							"testResults = JSON.parse(testResults);",
+							"",
+							"// Helper function to construct the full URL",
+							"function getFullRequestURL() {",
+							"    return pm.request.url.toString(); // Use toString() to get the full URL as a string",
+							"}",
+							"",
+							"// Add the current test case results",
+							"testResults.push({",
+							"    name: pm.info.requestName,",
+							"    status: pm.response.code === 200 ? \"PASS\" : \"FAIL\",",
+							"    details: {",
+							"        method: pm.request.method,",
+							"        uri: getFullRequestURL(), // Use the helper function to get the URL",
+							"        payload: pm.request.body ? pm.request.body.raw : null,",
+							"        queryParams: pm.request.url.query ? pm.request.url.query.toObject() : null,",
+							"        statusCode: pm.response.code,",
+							"        responseBody: pm.response.json()",
+							"    }",
+							"});",
+							"",
+							"// Update the collection variable with the new results",
+							"pm.collectionVariables.set(\"testResults\", JSON.stringify(testResults));",
+							"console.log(`Updated testResults variable after ${pm.info.requestName}:`, testResults);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Negative Flow: Testing with an invalid user ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fetch existing test results or initialize an empty array",
+							"let testResults = pm.collectionVariables.get(\"testResults\") || \"[]\";",
+							"testResults = JSON.parse(testResults);",
+							"",
+							"// Helper function to construct the full URL",
+							"function getFullRequestURL() {",
+							"    return pm.request.url.toString(); // Use toString() to get the full URL as a string",
+							"}",
+							"",
+							"// Add the current test case results",
+							"testResults.push({",
+							"    name: pm.info.requestName,",
+							"    status: pm.response.code === 200 ? \"PASS\" : \"FAIL\",",
+							"    details: {",
+							"        method: pm.request.method,",
+							"        uri: getFullRequestURL(), // Use the helper function to get the URL",
+							"        payload: pm.request.body ? pm.request.body.raw : null,",
+							"        queryParams: pm.request.url.query ? pm.request.url.query.toObject() : null,",
+							"        statusCode: pm.response.code,",
+							"        responseBody: pm.response.json()",
+							"    }",
+							"});",
+							"",
+							"// Update the collection variable with the new results",
+							"pm.collectionVariables.set(\"testResults\", JSON.stringify(testResults));",
+							"console.log(`Updated testResults variable after ${pm.info.requestName}:`, testResults);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://jsonplaceholder.typicode.com/users/invalid-id",
+					"protocol": "https",
+					"host": [
+						"jsonplaceholder",
+						"typicode",
+						"com"
+					],
+					"path": [
+						"users",
+						"invalid-id"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Jira Comment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Jira comment posted successfully\", function () {",
+							"    pm.response.to.have.status(201); // Jira returns 201 for successful comment creation",
+							"});",
+							"",
+							"// Log the response for debugging purposes",
+							"console.log(\"Response from Jira:\", pm.response.json());"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Fetch the consolidated test results",
+							"const testResults = JSON.parse(pm.collectionVariables.get(\"testResults\") || \"[]\");",
+							"",
+							"if (!testResults.length) {",
+							"    console.error(\"No test results found in testResults variable!\");",
+							"} else {",
+							"    console.log(\"Final testResults variable before posting to Jira:\", testResults);",
+							"}",
+							"",
+							"// Remove duplicate test scenarios by using a Set to track unique names",
+							"const uniqueTestResults = Array.from(",
+							"    new Map(testResults.map(result => [result.name, result])).values()",
+							");",
+							"",
+							"console.log(\"Unique testResults after deduplication:\", uniqueTestResults);",
+							"",
+							"// Function to create a heading in Jira doc format",
+							"function createHeading(text, level = 3) {",
+							"    return {",
+							"        type: \"heading\",",
+							"        attrs: { level },",
+							"        content: [",
+							"            {",
+							"                text,",
+							"                type: \"text\"",
+							"            }",
+							"        ]",
+							"    };",
+							"}",
+							"",
+							"// Function to create a paragraph in Jira doc format",
+							"function createParagraph(textArray) {",
+							"    return {",
+							"        type: \"paragraph\",",
+							"        content: textArray.map(text => (",
+							"            typeof text === \"string\"",
+							"                ? { text, type: \"text\" }",
+							"                : text // If it's already a formatted object (e.g., bold text), include it as is",
+							"        ))",
+							"    };",
+							"}",
+							"",
+							"// Function to create a bold text block in Jira doc format",
+							"function createBoldText(text) {",
+							"    return {",
+							"        text,",
+							"        type: \"text\",",
+							"        marks: [{ type: \"strong\" }]",
+							"    };",
+							"}",
+							"",
+							"// Function to create a code block in Jira doc format",
+							"function createCodeBlock(text) {",
+							"    return {",
+							"        type: \"codeBlock\",",
+							"        content: [",
+							"            {",
+							"                text,",
+							"                type: \"text\"",
+							"            }",
+							"        ]",
+							"    };",
+							"}",
+							"",
+							"// Construct the Jira comment body",
+							"const jiraComment = {",
+							"    body: {",
+							"        type: \"doc\",",
+							"        version: 1,",
+							"        content: [",
+							"            createHeading(\"Consolidated Test Results\"), // Main heading",
+							"            ...uniqueTestResults.flatMap(result => [",
+							"                createHeading(result.name, 3), // Heading for each test scenario",
+							"                createParagraph([",
+							"                    createBoldText(\"Request Method: \"),",
+							"                    {",
+							"                        text: `${result.details.method}`,",
+							"                        type: \"text\"",
+							"                    }",
+							"                ]),",
+							"                createParagraph([",
+							"                    createBoldText(\"Request URI: \"),",
+							"                    {",
+							"                        text: `${result.details.uri}`,",
+							"                        type: \"text\"",
+							"                    }",
+							"                ]),",
+							"                createParagraph([",
+							"                    createBoldText(\"Request Payload: \"),",
+							"                    {",
+							"                        text: JSON.stringify(result.details.payload || {}, null, 2),",
+							"                        type: \"text\"",
+							"                    }",
+							"                ]),",
+							"                createParagraph([",
+							"                    createBoldText(\"Request Query Params: \"),",
+							"                    {",
+							"                        text: JSON.stringify(result.details.queryParams || {}, null, 2),",
+							"                        type: \"text\"",
+							"                    }",
+							"                ]),",
+							"                createParagraph([",
+							"                    createBoldText(\"Response Status Code: \"),",
+							"                    {",
+							"                        text: `${result.details.statusCode}`,",
+							"                        type: \"text\"",
+							"                    }",
+							"                ]),",
+							"                createParagraph([",
+							"                    createBoldText(\"Response Body:\")",
+							"                ]),",
+							"                createCodeBlock(JSON.stringify(result.details.responseBody, null, 2)) // JSON-formatted response body",
+							"            ])",
+							"        ]",
+							"    }",
+							"};",
+							"",
+							"// Log the constructed payload for Jira",
+							"console.log(\"Constructed Jira Comment Payload:\", JSON.stringify(jiraComment, null, 2));",
+							"",
+							"// Set the constructed comment as the request body",
+							"pm.request.body.raw = JSON.stringify(jiraComment);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{jiraAuth}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{jiraBaseUrl}}/rest/api/3/issue/{{jiraIssueKey}}/comment",
+					"host": [
+						"{{jiraBaseUrl}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"3",
+						"issue",
+						"{{jiraIssueKey}}",
+						"comment"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// Clear testResults variable at the start of the collection",
+					"if (!pm.collectionVariables.has(\"testResults\")) {",
+					"    pm.collectionVariables.set(\"testResults\", \"[]\");",
+					"    console.log(\"Cleared testResults variable at the start of the collection\");",
+					"} else {",
+					"    console.log(\"testResults variable already exists:\", pm.collectionVariables.get(\"testResults\"));",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://jsonplaceholder.typicode.com",
+			"type": "string"
+		},
+		{
+			"key": "testResults",
+			"value": "[]",
+			"type": "string"
+		}
+	]
+}

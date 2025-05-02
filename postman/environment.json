@@ -1,0 +1,27 @@
+{
+	"id": "051d5cd2-0447-4d2e-b662-e7120fb6bf80",
+	"name": "postman-jira-automation",
+	"values": [
+		{
+			"key": "jiraBaseUrl",
+			"value": "{{replace_with_your_jira_base_url}}",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "jiraAuth",
+			"value": "{{replace_with_your_encoded_jira_auth_token}}",
+			"enabled": true,
+			"type": "default"
+		},
+		{
+			"key": "jiraIssueKey",
+			"value": "{{replace_with_your_jira_issue_key}}",
+			"enabled": true,
+			"type": "default"
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2025-05-02T12:05:07.815Z",
+	"_postman_exported_using": "Postman/11.43.4"
+}
